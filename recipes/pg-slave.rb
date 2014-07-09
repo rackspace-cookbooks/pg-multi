@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pg-multi
-# Default:: default
+# Default:: pg-slave
 #
 # Copyright 2014
 #
@@ -16,5 +16,3 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
-
-include_recipe 'postgresql::server'

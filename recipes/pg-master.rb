@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pg-multi
-# Default:: default
+# Default:: pg-master
 #
 # Copyright 2014
 #
@@ -17,4 +17,13 @@
 # limitations under the License.
 #
 
-include_recipe 'postgresql::server'
+include_recipe 'pg-multi::default'
+
+template "#{node['postgresql']['dir']}/pg_hba.conf" do
+  source "pg_hba.conf.master.erb"
+  owner "postgres"
+  group "postgres"
+  mode 00600
+  notifies change_notify, 'service[postgresql]', :immediately
+end
+
