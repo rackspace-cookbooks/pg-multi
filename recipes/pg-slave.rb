@@ -16,3 +16,51 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+node.set['postgresql']['config']['listen_addresses'] = '*'
+node.set['postgresql']['config']['wal_level'] = 'hot_standby'
+node.set['postgresql']['config']['max_wal_senders'] = 3
+node.set['postgresql']['config']['checkpoint_segments'] = 8
+node.set['postgresql']['config']['wal_keep_segments'] = 8
+node.set['postgresql']['config']['hot_standby'] = 'on'
+
+include_recipe 'pg-multi::default'
+
+template '/var/lib/postgresql/.pgpass' do
+  cookbook 'pg-multi'
+  source 'pgpass.erb'
+  owner 'postgres'
+  group 'postgres'
+  mode 0600
+  variables(
+    username: node['pg-multi']['replication']['user'],
+    password: node['pg-multi']['replication']['password']
+  )	
+end
+
+bash 'pull_master_databases' do
+  user 'root'
+  cwd '/tmp'
+  code <<-EOH
+  service postgresql stop
+  sudo -u postgres rm -rf /var/lib/postgresql/#{node['postgresql']['version']}/main
+  sudo -u postgres pg_basebackup -h #{node['pg-multi']['master_ip']} -D /var/lib/postgresql/#{node['postgresql']['version']}/main -U repl -w --xlog-method=stream
+  EOH
+  not_if { ::File.exists?("/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf") }
+end
+
+template "/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf" do
+  cookbook 'pg-multi'
+  source 'recovery_conf.erb'
+  owner 'postgres'
+  group 'postgres'
+  mode 0644
+  variables(
+  	cookbook_name: cookbook_name,
+    host: node['pg-multi']['master_ip'],
+    port: node['postgresql']['config']['port'],
+    rep_user: node['pg-multi']['replication']['user'],
+    password: node['pg-multi']['replication']['password']
+  )
+  notifies :restart, "service[postgresql]", :immediately
+end

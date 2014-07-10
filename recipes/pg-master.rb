@@ -17,13 +17,29 @@
 # limitations under the License.
 #
 
+# specific settings for master postgresql server
+node.set['postgresql']['config']['listen_addresses'] = '*'
+node.set['postgresql']['config']['wal_level'] = 'hot_standby'
+node.set['postgresql']['config']['max_wal_senders'] = 3
+node.set['postgresql']['config']['checkpoint_segments'] = 8
+node.set['postgresql']['config']['wal_keep_segments'] = 8
+
+# TODO this needs to loop to pick up multiple slaves...
+node.set['postgresql']['pg_hba'] = [{
+	:comment => '# slave server using SSL',
+	:type => 'hostssl',
+	:db => 'replication',
+	:user => node['pg-multi']['replication']['user'],
+	:addr => "#{node['pg-multi']['slave_ip']}/32",
+    :method => 'md5'
+    }]
+
 include_recipe 'pg-multi::default'
 
-template "#{node['postgresql']['dir']}/pg_hba.conf" do
-  source "pg_hba.conf.master.erb"
-  owner "postgres"
-  group "postgres"
-  mode 00600
-  notifies change_notify, 'service[postgresql]', :immediately
+# adds replication user to database
+execute 'set-replication-user' do
+  command %Q[psql -c "CREATE USER #{node['pg-multi']['replication']['user']} REPLICATION LOGIN ENCRYPTED PASSWORD '#{node['pg-multi']['replication']['password']}';"]
+  not_if %Q[sudo -u postgres psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='#{node['pg-multi']['replication']['user']}'"| grep 1 ]
+  user 'postgres'
+  action :run
 end
-
