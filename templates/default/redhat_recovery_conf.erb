@@ -1,0 +1,7 @@
+# CHEF MANAGED FILE: DO NOT EDIT
+# Controlling Cookbook: <%= @cookbook_name %>
+#
+
+standby_mode = 'on'
+primary_conninfo = 'host=<%= @host %> port=<%= @port %> user=<%= @rep_user %> password=<%= @password %>'
+trigger_file = '/tmp/postgresql.trigger'

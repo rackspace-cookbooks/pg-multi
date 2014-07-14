@@ -17,15 +17,6 @@
 # limitations under the License.
 #
 
-node.set['postgresql']['config']['listen_addresses'] = '*'
-node.set['postgresql']['config']['wal_level'] = 'hot_standby'
-node.set['postgresql']['config']['max_wal_senders'] = 3
-node.set['postgresql']['config']['checkpoint_segments'] = 8
-node.set['postgresql']['config']['wal_keep_segments'] = 8
-node.set['postgresql']['config']['hot_standby'] = 'on'
-
-include_recipe 'pg-multi::default'
-
 template '/var/lib/postgresql/.pgpass' do
   cookbook 'pg-multi'
   source 'pgpass.erb'
@@ -51,7 +42,7 @@ end
 
 template "/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf" do
   cookbook 'pg-multi'
-  source 'recovery_conf.erb'
+  source 'debian_recovery_conf.erb'
   owner 'postgres'
   group 'postgres'
   mode 0644

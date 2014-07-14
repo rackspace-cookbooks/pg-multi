@@ -24,22 +24,38 @@ node.set['postgresql']['config']['max_wal_senders'] = 3
 node.set['postgresql']['config']['checkpoint_segments'] = 8
 node.set['postgresql']['config']['wal_keep_segments'] = 8
 
-# TODO this needs to loop to pick up multiple slaves...
-node.set['postgresql']['pg_hba'] = [{
-	:comment => '# slave server using SSL',
-	:type => 'hostssl',
-	:db => 'replication',
-	:user => node['pg-multi']['replication']['user'],
-	:addr => "#{node['pg-multi']['slave_ip']}/32",
+# set SSL usage based on OS support (debian yes, Redhat no)
+case node['platform_family']
+when 'debian'  
+  node.set['pg-multi']['host'] = 'hostssl'
+else
+  node.set['pg-multi']['host'] = 'host'
+end
+
+pghba= []
+originpghba = node.default['postgresql']['pg_hba']
+
+node['pg-multi']['slave_ip'].each do |slaveip|
+  pghba << {
+	  :comment => '# authorize slave server',
+	  :type => node['pg-multi']['host'],
+	  :db => 'replication',
+	  :user => node['pg-multi']['replication']['user'],
+	  :addr => "#{slaveip}/32",
     :method => 'md5'
-    }]
+  }
+end
+
+fullset = pghba.zip(originpghba).flatten.compact
+node.set['postgresql']['pg_hba'] = fullset
 
 include_recipe 'pg-multi::default'
 
 # adds replication user to database
 execute 'set-replication-user' do
+  role_exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{node['pg-multi']['replication']['user']}'" | grep #{node['pg-multi']['replication']['user']})
   command %Q[psql -c "CREATE USER #{node['pg-multi']['replication']['user']} REPLICATION LOGIN ENCRYPTED PASSWORD '#{node['pg-multi']['replication']['password']}';"]
-  not_if %Q[sudo -u postgres psql postgres -tAc "SELECT 1 FROM pg_roles WHERE rolname='#{node['pg-multi']['replication']['user']}'"| grep 1 ]
+  not_if role_exists,  user: "postgres"
   user 'postgres'
   action :run
 end
