@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+# add .pgpass file to allow pg_basebackup to run without password input
 template '/var/lib/pgsql/.pgpass' do
   cookbook 'pg-multi'
   source 'pgpass.erb'
@@ -29,10 +30,12 @@ template '/var/lib/pgsql/.pgpass' do
   )	
 end
 
+# stop service to allow for master database sync
 service 'postgresql' do
   action :stop
 end
 
+# one time sync with database master server
 bash 'pull_master_databases' do
   user 'postgres'
   cwd '/tmp'
@@ -45,8 +48,7 @@ bash 'pull_master_databases' do
   not_if { ::File.exists?("/var/lib/postgresql/#{node['postgresql']['version']}/data/recovery.conf") }
 end
 
-
-
+# configure recovery.conf file for replication
 template "/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf" do
   cookbook 'pg-multi'
   source 'redhat_recovery_conf.erb'
@@ -62,4 +64,3 @@ template "/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf" do
   )
   notifies :restart, "service[postgresql]", :immediately
 end
-

@@ -32,6 +32,7 @@ else
   node.set['pg-multi']['host'] = 'host'
 end
 
+#build array for use in pg_hba.conf file
 pghba= []
 originpghba = node.default['postgresql']['pg_hba']
 

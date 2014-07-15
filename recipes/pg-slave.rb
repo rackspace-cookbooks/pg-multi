@@ -17,6 +17,7 @@
 # limitations under the License.
 #
 
+# specific settings for slave postgresql server
 node.set['postgresql']['config']['listen_addresses'] = '*'
 node.set['postgresql']['config']['wal_level'] = 'hot_standby'
 node.set['postgresql']['config']['max_wal_senders'] = 3
