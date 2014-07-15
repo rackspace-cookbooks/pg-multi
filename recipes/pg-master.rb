@@ -59,3 +59,5 @@ execute 'set-replication-user' do
   user 'postgres'
   action :run
 end
+
+tag('pg_master')

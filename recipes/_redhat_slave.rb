@@ -29,23 +29,30 @@ template '/var/lib/pgsql/.pgpass' do
   )	
 end
 
+service 'postgresql' do
+  action :stop
+end
+
 bash 'pull_master_databases' do
-  user 'root'
+  user 'postgres'
   cwd '/tmp'
   code <<-EOH
-  service postgresql stop
-  sudo -u postgres rm -rf /var/lib/pgsql/#{node['postgresql']['version']}/data
-  sudo -u postgres pg_basebackup -h #{node['pg-multi']['master_ip']} -D /var/lib/pgsql/#{node['postgresql']['version']}/data -U repl -w --xlog-method=stream
+  rm -rf /var/lib/pgsql/#{node['postgresql']['version']}/data
+  pg_basebackup -h #{node['pg-multi']['master_ip']} -D /var/lib/pgsql/#{node['postgresql']['version']}/data -U repl -w --xlog-method=stream
   EOH
-  not_if { ::File.exists?("/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf") }
+  notifies :create, "template[#{node['postgresql']['dir']}/pg_hba.conf]", :immediately
+  notifies :create, "template[#{node['postgresql']['dir']}/postgresql.conf]", :immediately
+  not_if { ::File.exists?("/var/lib/postgresql/#{node['postgresql']['version']}/data/recovery.conf") }
 end
+
+
 
 template "/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf" do
   cookbook 'pg-multi'
   source 'redhat_recovery_conf.erb'
   owner 'postgres'
   group 'postgres'
-  mode 0644
+  mode 0600
   variables(
   	cookbook_name: cookbook_name,
     host: node['pg-multi']['master_ip'],
@@ -55,3 +62,4 @@ template "/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf" do
   )
   notifies :restart, "service[postgresql]", :immediately
 end
+

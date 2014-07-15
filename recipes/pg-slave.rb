@@ -29,7 +29,8 @@ include_recipe 'pg-multi::default'
 case node['platform_family']
 when 'debian'
   include_recipe 'pg-multi::_debian_slave'
-when 'redhat'
+when 'rhel'
   include_recipe 'pg-multi::_redhat_slave'
 end
-  
+
+tag('pg_slave')
