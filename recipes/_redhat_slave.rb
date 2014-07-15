@@ -27,12 +27,13 @@ template '/var/lib/pgsql/.pgpass' do
   variables(
     username: node['pg-multi']['replication']['user'],
     password: node['pg-multi']['replication']['password']
-  )	
+  )
 end
 
 # stop service to allow for master database sync
 service 'postgresql' do
   action :stop
+  not_if { ::File.exists?("/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf") }
 end
 
 # one time sync with database master server
@@ -43,9 +44,9 @@ bash 'pull_master_databases' do
   rm -rf /var/lib/pgsql/#{node['postgresql']['version']}/data
   pg_basebackup -h #{node['pg-multi']['master_ip']} -D /var/lib/pgsql/#{node['postgresql']['version']}/data -U repl -w --xlog-method=stream
   EOH
+  not_if { ::File.exists?("/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf") }
   notifies :create, "template[#{node['postgresql']['dir']}/pg_hba.conf]", :immediately
   notifies :create, "template[#{node['postgresql']['dir']}/postgresql.conf]", :immediately
-  not_if { ::File.exists?("/var/lib/postgresql/#{node['postgresql']['version']}/data/recovery.conf") }
 end
 
 # configure recovery.conf file for replication
@@ -62,5 +63,5 @@ template "/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf" do
     rep_user: node['pg-multi']['replication']['user'],
     password: node['pg-multi']['replication']['password']
   )
-  notifies :restart, "service[postgresql]", :immediately
+  notifies :restart, "service[postgresql]", :delayed
 end

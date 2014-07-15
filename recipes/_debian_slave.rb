@@ -27,7 +27,8 @@ template '/var/lib/postgresql/.pgpass' do
   variables(
     username: node['pg-multi']['replication']['user'],
     password: node['pg-multi']['replication']['password']
-  )	
+  )
+  not_if { ::File.exists?("/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf") }	
 end
 
 # one time sync with database master server
