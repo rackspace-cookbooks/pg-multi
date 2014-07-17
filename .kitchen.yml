@@ -1,0 +1,32 @@
+---
+driver:
+  name: vagrant
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu-14.04
+    attributes: 
+      postgresql:
+        enable_pgdg_apt: true
+  - name: ubuntu-12.04
+    attributes: 
+      postgresql:
+        enable_pgdg_apt: true
+  - name: centos-6.5
+    attributes: 
+      postgresql:
+        enable_pgdg_yum: true
+
+suites:
+  - name: master
+    run_list:
+      - recipe[pg-multi::pg-master]
+    attributes:
+
+  - name: slave
+    run_list:
+      - recipe[pg-multi::pg-slave]
+    attributes:
+
