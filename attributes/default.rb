@@ -1,4 +1,3 @@
-default['postgresql']['version'] = '9.3'
 
 default['pg-multi']['master_ip'] = ''
 default['pg-multi']['slave_ip'] = []
