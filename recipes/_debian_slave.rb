@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pg-multi
-# Default:: _debian_slave
+# Recipe:: _debian_slave
 #
 # Copyright 2014
 #
@@ -28,7 +28,7 @@ template '/var/lib/postgresql/.pgpass' do
     username: node['pg-multi']['replication']['user'],
     password: node['pg-multi']['replication']['password']
   )
-  not_if { ::File.exists?("/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf") }	
+  not_if { ::File.exist?("/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf") }
 end
 
 # one time sync with database master server
@@ -40,7 +40,7 @@ bash 'pull_master_databases' do
   sudo -u postgres rm -rf /var/lib/postgresql/#{node['postgresql']['version']}/main
   sudo -u postgres pg_basebackup -h #{node['pg-multi']['master_ip']} -D /var/lib/postgresql/#{node['postgresql']['version']}/main -U repl -w --xlog-method=stream
   EOH
-  not_if { ::File.exists?("/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf") }
+  not_if { ::File.exist?("/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.conf") }
 end
 
 # configure recovery.conf file for replication
@@ -51,11 +51,11 @@ template "/var/lib/postgresql/#{node['postgresql']['version']}/main/recovery.con
   group 'postgres'
   mode 0644
   variables(
-  	cookbook_name: cookbook_name,
-    host: node['pg-multi']['master_ip'],
-    port: node['postgresql']['config']['port'],
-    rep_user: node['pg-multi']['replication']['user'],
-    password: node['pg-multi']['replication']['password']
+    cookbook_name: cookbook_name,
+    host:      node['pg-multi']['master_ip'],
+    port:      node['postgresql']['config']['port'],
+    rep_user:  node['pg-multi']['replication']['user'],
+    password:  node['pg-multi']['replication']['password']
   )
-  notifies :restart, "service[postgresql]", :immediately
+  notifies :restart, 'service[postgresql]', :immediately
 end

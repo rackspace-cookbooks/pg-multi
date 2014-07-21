@@ -22,11 +22,11 @@ platforms:
 suites:
   - name: master
     run_list:
-      - recipe[pg-multi::pg-master]
+      - recipe[pg-multi::pg_master]
     attributes:
 
   - name: slave
     run_list:
-      - recipe[pg-multi::pg-slave]
+      - recipe[pg-multi::pg_slave]
     attributes:
 

@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pg-multi
-# Default:: default
+# Recipe:: default
 #
 # Copyright 2014
 #

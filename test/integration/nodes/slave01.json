@@ -6,7 +6,7 @@
     "hostname": "vagrant.vm",
     "os": "centos",
     "recipes": [
-      "pg-multi::pg-slave"
+      "pg-multi::pg_slave"
     ],
     "roles": [
       "postgresql_slave"

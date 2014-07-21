@@ -1,6 +1,6 @@
 #
 # Cookbook Name:: pg-multi
-# Default:: pg-slave
+# Recipe:: pg_slave
 #
 # Copyright 2014
 #

@@ -6,7 +6,7 @@
     "hostname": "vagrant.vm",
     "os": "centos",
     "recipes": [
-      "pg-multi::pg-master"
+      "pg-multi::pg_master"
     ],
     "roles": [
       "postgresql_master"

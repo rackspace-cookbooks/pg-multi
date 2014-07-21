@@ -1,7 +1,7 @@
 # encoding: UTF-8
 require 'spec_helper'
 
-describe 'pg-multi::pg-master' do
+describe 'pg-multi::pg_master' do
   before do
     allow(::File).to receive(:symlink?).and_return(false)
     stub_command("psql -c \"SELECT rolname FROM pg_roles WHERE rolname='repl'\" | grep repl").and_return(false)
@@ -9,7 +9,7 @@ describe 'pg-multi::pg-master' do
 
   platforms = {
     'ubuntu' => ['12.04', '14.04'],
-    'centos' => ['6.5'] 
+    'centos' => ['6.5']
   }
 
   platforms.each do |platform, versions|
@@ -17,7 +17,7 @@ describe 'pg-multi::pg-master' do
       context "on #{platform.capitalize} #{version}" do
         let(:chef_run) do
           ChefSpec::Runner.new(platform: platform, version: version) do |node|
-            node.set['postgresql']['password']['postgres']= 'test123'
+            node.set['postgresql']['password']['postgres'] = 'test123'
             node.set['postgresql']['version'] = '9.3'
             node.set['pg-multi']['replication']['user'] = 'repl'
             node.set['pg-multi']['replication']['password'] = 'useagudpasswd'

@@ -12,10 +12,10 @@ the creation of master/slave and master/multi-slave Postgresql systems.
 
 The cookbook utilizes two recipes depending on the server's role.
 
-`pg-master.rb` : sets up a master Postgresql server and creates a replicant users
+`pg_master.rb` : sets up a master Postgresql server and creates a replicant users
 for along with setting up the authorization within the pg_hba.conf file.
 
-`pg-slave.rb` : sets up a slave Postgresql streaming slave replication server pointing to the master node
+`pg_slave.rb` : sets up a slave Postgresql streaming slave replication server pointing to the master node
 definded within attributes. The server is configured by default as read-only.
 
 Attributes

@@ -1,14 +1,14 @@
 # encoding: UTF-8
 require 'spec_helper'
 
-describe 'pg-multi::pg-slave' do
+describe 'pg-multi::pg_slave' do
   before do
     allow(::File).to receive(:symlink?).and_return(false)
   end
 
   platforms = {
     'ubuntu' => ['12.04', '14.04'],
-    'centos' => ['6.5'] 
+    'centos' => ['6.5']
   }
 
   platforms.each do |platform, versions|
@@ -16,7 +16,7 @@ describe 'pg-multi::pg-slave' do
       context "on #{platform.capitalize} #{version}" do
         let(:chef_run) do
           ChefSpec::Runner.new(platform: platform, version: version) do |node|
-            node.set['postgresql']['password']['postgres']= 'test123'
+            node.set['postgresql']['password']['postgres'] = 'test123'
             node.set['postgresql']['version'] = '9.3'
             node.set['pg-multi']['replication']['user'] = 'repl'
             node.set['pg-multi']['replication']['password'] = 'useagudpasswd'
@@ -34,12 +34,12 @@ describe 'pg-multi::pg-slave' do
     'ubuntu' => ['12.04', '14.04']
   }
 
-  uplats.each do |uplats, versions|
+  uplats.each do |platform, versions|
     versions.each do |version|
-      context "on #{uplats.capitalize} #{version}" do
+      context "on #{platform.capitalize} #{version}" do
         let(:uplats_run) do
-          ChefSpec::Runner.new(platform: uplats, version: version) do |node|
-            node.set['postgresql']['password']['postgres']= 'test123'
+          ChefSpec::Runner.new(platform: platform, version: version) do |node|
+            node.set['postgresql']['password']['postgres'] = 'test123'
             node.set['postgresql']['version'] = '9.3'
             node.set['pg-multi']['replication']['user'] = 'repl'
             node.set['pg-multi']['replication']['password'] = 'useagudpasswd'
@@ -63,7 +63,7 @@ describe 'pg-multi::pg-slave' do
         end
 
         it 'creates recovery.conf file' do
-          expect(uplats_run).to create_template("/var/lib/postgresql/9.3/main/recovery.conf").with(
+          expect(uplats_run).to create_template('/var/lib/postgresql/9.3/main/recovery.conf').with(
             user: 'postgres',
             group: 'postgres',
             mode: 0644
@@ -72,17 +72,16 @@ describe 'pg-multi::pg-slave' do
       end
     end
   end
-  
   cplats = {
     'centos' => ['6.5']
   }
 
-  cplats.each do |cplats, versions|
+  cplats.each do |platform, versions|
     versions.each do |version|
-      context "on #{cplats.capitalize} #{version}" do
+      context "on #{platform.capitalize} #{version}" do
         let(:cplats_run) do
-          ChefSpec::Runner.new(platform: cplats, version: version) do |node|
-            node.set['postgresql']['password']['postgres']= 'test123'
+          ChefSpec::Runner.new(platform: platform, version: version) do |node|
+            node.set['postgresql']['password']['postgres'] = 'test123'
             node.set['postgresql']['version'] = '9.3'
             node.set['pg-multi']['replication']['user'] = 'repl'
             node.set['pg-multi']['replication']['password'] = 'useagudpasswd'
@@ -106,7 +105,7 @@ describe 'pg-multi::pg-slave' do
         end
 
         it 'creates recovery.conf file' do
-          expect(cplats_run).to create_template("/var/lib/pgsql/9.3/data/recovery.conf").with(
+          expect(cplats_run).to create_template('/var/lib/pgsql/9.3/data/recovery.conf').with(
             user: 'postgres',
             group: 'postgres'
           )
