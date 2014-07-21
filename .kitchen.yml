@@ -21,12 +21,91 @@ platforms:
 
 suites:
   - name: master
+    driver:
+      vm_hostname: master-ubuntu-14
+      network: 
+      - ['private_network', {ip: '192.168.0.21'}]
     run_list:
-      - recipe[pg-multi::pg_master]
+    - recipe[pg-multi::pg_master]
+    excludes: ['ubuntu-12.04', 'centos-6.5']
     attributes:
+      postgresql:
+        version: '9.3'
+      pg-multi:
+        master_ip: '192.168.0.21'
+        slave_ip: ['192.168.0.22']
 
   - name: slave
+    driver:
+      vm_hostname: slave-ubuntu-14
+      network: 
+      - ['private_network', {ip: '192.168.0.22'}]
     run_list:
-      - recipe[pg-multi::pg_slave]
+    - recipe[pg-multi::pg_slave]
+    excludes: ['ubuntu-12.04', 'centos-6.5']
     attributes:
+      postgresql:
+        version: '9.3'
+      pg-multi: 
+        master_ip: '192.168.0.21'
+        slave_ip: ['192.168.0.22']
 
+  - name: master
+    driver:
+      vm_hostname: master-ubuntu-12
+      network: 
+      - ['private_network', {ip: '192.168.0.23'}]
+    run_list:
+    - recipe[pg-multi::pg_master]
+    excludes: ['ubuntu-14.04', 'centos-6.5']
+    attributes:
+      postgresql:
+        version: '9.3'
+      pg-multi:
+        master_ip: '192.168.0.23'
+        slave_ip: ['192.168.0.24']
+
+  - name: slave
+    driver:
+      vm_hostname: slave-ubuntu-12
+      network: 
+      - ['private_network', {ip: '192.168.0.24'}]
+    run_list:
+    - recipe[pg-multi::pg_slave]
+    excludes: ['ubuntu-14.04', 'centos-6.5']
+    attributes:
+      postgresql:
+        version: '9.3'
+      pg-multi: 
+        master_ip: '192.168.0.23'
+        slave_ip: ['192.168.0.24']
+
+  - name: master
+    driver:
+      vm_hostname: master-centos-6
+      network: 
+      - ['private_network', {ip: '192.168.0.25'}]
+    run_list:
+    - recipe[pg-multi::pg_master]
+    excludes: ['ubuntu-14.04', 'ubuntu-12.04']
+    attributes:
+      postgresql:
+        version: '9.3'
+      pg-multi:
+        master_ip: '192.168.0.25'
+        slave_ip: ['192.168.0.26']
+
+  - name: slave
+    driver:
+      vm_hostname: slave-centos-6
+      network: 
+      - ['private_network', {ip: '192.168.0.26'}]
+    run_list:
+    - recipe[pg-multi::pg_slave]
+    excludes: ['ubuntu-14.04', 'ubuntu-12.04']
+    attributes:
+      postgresql:
+        version: '9.3'
+      pg-multi: 
+        master_ip: '192.168.0.25'
+        slave_ip: ['192.168.0.26']
