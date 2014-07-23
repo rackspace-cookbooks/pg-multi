@@ -63,5 +63,5 @@ template "/var/lib/pgsql/#{node['postgresql']['version']}/data/recovery.conf" do
     rep_user: node['pg-multi']['replication']['user'],
     password: node['pg-multi']['replication']['password']
   )
-  notifies :restart, 'service[postgresql]', :delayed
+  notifies :restart, 'service[postgresql]', :immediately
 end
