@@ -1,3 +1,4 @@
+# encoding: UTF-8
 name 'pg-multi'
 maintainer 'Christopher Coffey'
 maintainer_email 'christopher.coffey@rackspace.com'
