@@ -11,3 +11,5 @@ bin/*
 .DS_Store
 
 Berksfile.lock
+
+Gemfile.lock

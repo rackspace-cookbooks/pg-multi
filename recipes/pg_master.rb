@@ -1,3 +1,4 @@
+# encoding: UTF-8
 #
 # Cookbook Name:: pg-multi
 # Recipe:: pg_master
