@@ -34,11 +34,8 @@ else
 end
 
 # build array for use in pg_hba.conf file
-pghba = []
-originpghba = node.default['postgresql']['pg_hba']
-
 node['pg-multi']['slave_ip'].each do |slaveip|
-  pghba << {
+  node.default['postgresql']['pg_hba'] << {
     comment: '# authorize slave server',
     type: node['pg-multi']['host'],
     db: 'replication',
@@ -47,9 +44,6 @@ node['pg-multi']['slave_ip'].each do |slaveip|
     method: 'md5'
   }
 end
-
-fullset = pghba.zip(originpghba).flatten.compact
-node.set['postgresql']['pg_hba'] = fullset
 
 include_recipe 'pg-multi::default'
 
