@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+include_recipe 'chef-sugar'
+
 # specific settings for master postgresql server
 node.set['postgresql']['config']['listen_addresses'] = '*'
 node.set['postgresql']['config']['wal_level'] = 'hot_standby'
