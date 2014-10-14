@@ -1,5 +1,5 @@
 # A sample Gemfile
-source "https://rubygems.org"
+source 'https://rubygems.org'
 
 group :lint do
   gem 'foodcritic-rackspace-rules'
