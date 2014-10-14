@@ -15,9 +15,10 @@ describe 'pg-multi::default' do
     versions.each do |version|
       context "on #{platform.capitalize} #{version}" do
         let(:chef_run) do
-          ChefSpec::Runner.new(platform: platform, version: version) do |node|
+          ChefSpec::SoloRunner.new(platform: platform, version: version) do |node|
             node.set['postgresql']['password']['postgres'] = 'test123'
             node.set['postgresql']['version'] = '9.3'
+            node.set['testkitchen'] = false
           end.converge(described_recipe)
         end
 

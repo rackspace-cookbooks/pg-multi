@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+include_recipe 'chef-sugar'
+
 # specific settings for master postgresql server
 node.set['postgresql']['config']['listen_addresses'] = '*'
 node.set['postgresql']['config']['wal_level'] = 'hot_standby'
@@ -50,7 +52,7 @@ include_recipe 'pg-multi::default'
 # adds replication user to database
 execute 'set-replication-user' do
   role_exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{node['pg-multi']['replication']['user']}'" | grep #{node['pg-multi']['replication']['user']})
-  command %Q(psql -c "CREATE USER #{node['pg-multi']['replication']['user']} REPLICATION LOGIN ENCRYPTED PASSWORD '#{node['pg-multi']['replication']['password']}';")
+  command %(psql -c "CREATE USER #{node['pg-multi']['replication']['user']} REPLICATION LOGIN ENCRYPTED PASSWORD '#{node['pg-multi']['replication']['password']}';")
   not_if role_exists,  user: 'postgres'
   user 'postgres'
   action :run

@@ -18,6 +18,8 @@
 # limitations under the License.
 #
 
+include_recipe 'chef-sugar'
+
 # specific settings for slave postgresql server
 node.set['postgresql']['config']['listen_addresses'] = '*'
 node.set['postgresql']['config']['wal_level'] = 'hot_standby'
@@ -28,11 +30,13 @@ node.set['postgresql']['config']['hot_standby'] = 'on'
 
 include_recipe 'pg-multi::default'
 
-case node['platform_family']
-when 'debian'
-  include_recipe 'pg-multi::_debian_slave'
-when 'rhel'
-  include_recipe 'pg-multi::_redhat_slave'
+unless node.deep_fetch('testkitchen')
+  case node['platform_family']
+  when 'debian'
+    include_recipe 'pg-multi::_debian_slave'
+  when 'rhel'
+    include_recipe 'pg-multi::_redhat_slave'
+  end
 end
 
 tag('pg_slave')
