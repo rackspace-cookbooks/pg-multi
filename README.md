@@ -18,6 +18,19 @@ for along with setting up the authorization within the pg_hba.conf file.
 `pg_slave.rb` : sets up a slave Postgresql streaming slave replication server pointing to the master node
 definded within attributes. The slave servers are configured by default into read-only mode.
 
+Setting PostgreSQL versions
+---------------------------
+
+By default the underlying postgresql cookbook sets the version by the OS. This can be
+overridden using the attribute:
+
+`['postgresql']['version']`
+
+So for example if you want to have PostgreSQL 9.3 running on your CentOS server (vice the
+default of 8.4) you have to set this attribute as a node override:
+
+`node.default['postgresql']['version'] = '9.3'`
+
 Attributes
 -----------
 

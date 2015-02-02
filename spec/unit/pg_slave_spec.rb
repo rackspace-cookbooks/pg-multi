@@ -4,6 +4,8 @@ require 'spec_helper'
 describe 'pg-multi::pg_slave' do
   before do
     allow(::File).to receive(:symlink?).and_return(false)
+    stub_command('ls /var/lib/postgresql/9.3/main/recovery.conf').and_return(true)
+    stub_command('ls /var/lib/pgsql/9.3/data/recovery.conf').and_return(true)
   end
 
   platforms = {
