@@ -11,7 +11,7 @@ describe 'pg-multi::pg_master' do
 
   platforms = {
     'ubuntu' => ['12.04', '14.04'],
-    'centos' => ['6.5']
+    'centos' => ['6.6', '7.0']
   }
 
   platforms.each do |platform, versions|

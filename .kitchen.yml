@@ -7,27 +7,27 @@ provisioner:
 
 platforms:
   - name: ubuntu-14.04
-    attributes: 
+    attributes:
       postgresql:
         enable_pgdg_apt: true
   - name: ubuntu-12.04
-    attributes: 
+    attributes:
       postgresql:
         enable_pgdg_apt: true
-  - name: centos-6.5
-    attributes: 
+  - name: centos-6.6
+    attributes:
       postgresql:
         enable_pgdg_yum: true
 
 suites:
-  - name: master
+  - name: mu14
     driver:
       vm_hostname: master-ubuntu-14
-      network: 
-      - ['private_network', {ip: '192.168.0.21'}]
+      network:
+      - ["private_network", {ip: "192.168.0.21"}]
     run_list:
     - recipe[pg-multi::pg_master]
-    excludes: ['ubuntu-12.04', 'centos-6.5']
+    excludes: ['ubuntu-12.04', 'centos-6.6']
     attributes:
       postgresql:
         version: '9.3'
@@ -35,29 +35,29 @@ suites:
         master_ip: '192.168.0.21'
         slave_ip: ['192.168.0.22']
 
-  - name: slave
+  - name: su14
     driver:
       vm_hostname: slave-ubuntu-14
-      network: 
-      - ['private_network', {ip: '192.168.0.22'}]
+      network:
+      - ["private_network", {ip: "192.168.0.22"}]
     run_list:
     - recipe[pg-multi::pg_slave]
-    excludes: ['ubuntu-12.04', 'centos-6.5']
+    excludes: ['ubuntu-12.04', 'centos-6.6']
     attributes:
       postgresql:
         version: '9.3'
-      pg-multi: 
+      pg-multi:
         master_ip: '192.168.0.21'
         slave_ip: ['192.168.0.22']
 
-  - name: master
+  - name: mu12
     driver:
       vm_hostname: master-ubuntu-12
-      network: 
-      - ['private_network', {ip: '192.168.0.23'}]
+      network:
+      - ["private_network", {ip: "192.168.0.23"}]
     run_list:
     - recipe[pg-multi::pg_master]
-    excludes: ['ubuntu-14.04', 'centos-6.5']
+    excludes: ['ubuntu-14.04', 'centos-6.6']
     attributes:
       postgresql:
         version: '9.3'
@@ -65,26 +65,26 @@ suites:
         master_ip: '192.168.0.23'
         slave_ip: ['192.168.0.24']
 
-  - name: slave
+  - name: su12
     driver:
       vm_hostname: slave-ubuntu-12
-      network: 
-      - ['private_network', {ip: '192.168.0.24'}]
+      network:
+      - ["private_network", {ip: "192.168.0.24"}]
     run_list:
     - recipe[pg-multi::pg_slave]
-    excludes: ['ubuntu-14.04', 'centos-6.5']
+    excludes: ['ubuntu-14.04', 'centos-6.6']
     attributes:
       postgresql:
         version: '9.3'
-      pg-multi: 
+      pg-multi:
         master_ip: '192.168.0.23'
         slave_ip: ['192.168.0.24']
 
-  - name: master
+  - name: mc6
     driver:
       vm_hostname: master-centos-6
-      network: 
-      - ['private_network', {ip: '192.168.0.25'}]
+      network:
+      - ["private_network", {ip: "192.168.0.25"}]
     run_list:
     - recipe[pg-multi::pg_master]
     excludes: ['ubuntu-14.04', 'ubuntu-12.04']
@@ -95,17 +95,17 @@ suites:
         master_ip: '192.168.0.25'
         slave_ip: ['192.168.0.26']
 
-  - name: slave
+  - name: sc6
     driver:
       vm_hostname: slave-centos-6
-      network: 
-      - ['private_network', {ip: '192.168.0.26'}]
+      network:
+      - ["private_network", {ip: "192.168.0.26"}]
     run_list:
     - recipe[pg-multi::pg_slave]
     excludes: ['ubuntu-14.04', 'ubuntu-12.04']
     attributes:
       postgresql:
         version: '9.3'
-      pg-multi: 
+      pg-multi:
         master_ip: '192.168.0.25'
         slave_ip: ['192.168.0.26']

@@ -3,7 +3,7 @@
 # Cookbook Name:: pg-multi
 # Recipe:: pg_master
 #
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2015, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,35 +27,23 @@ node.set['postgresql']['config']['max_wal_senders'] = 3
 node.set['postgresql']['config']['checkpoint_segments'] = 8
 node.set['postgresql']['config']['wal_keep_segments'] = 8
 
-# set SSL usage based on OS support (debian yes, Redhat no)
+# since debian families can do ssl by default enable it, otherwise non-ssl connections
 case node['platform_family']
 when 'debian'
   node.set['pg-multi']['host'] = 'hostssl'
-else
+when 'redhat'
   node.set['pg-multi']['host'] = 'host'
 end
 
-# build array for use in pg_hba.conf file
-node['pg-multi']['slave_ip'].each do |slaveip|
-  node.default['postgresql']['pg_hba'] << {
-    comment: '# authorize slave server',
-    type: node['pg-multi']['host'],
-    db: 'replication',
-    user: node['pg-multi']['replication']['user'],
-    addr: "#{slaveip}/32",
-    method: 'md5'
-  }
+pg_hba_config 'default' do
+  host_type node['pg-multi']['host']
+  slave_ips node['pg-multi']['slave_ip']
 end
 
 include_recipe 'pg-multi::default'
 
-# adds replication user to database
-execute 'set-replication-user' do
-  role_exists = %(psql -c "SELECT rolname FROM pg_roles WHERE rolname='#{node['pg-multi']['replication']['user']}'" | grep #{node['pg-multi']['replication']['user']})
-  command %(psql -c "CREATE USER #{node['pg-multi']['replication']['user']} REPLICATION LOGIN ENCRYPTED PASSWORD '#{node['pg-multi']['replication']['password']}';")
-  not_if role_exists,  user: 'postgres'
-  user 'postgres'
-  action :run
+pg_repluser 'default' do
+  repl_pass node['pg-multi']['replication']['password']
 end
 
 tag('pg_master')
