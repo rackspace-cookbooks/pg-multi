@@ -27,7 +27,7 @@ class Chef
         end
 
         # add .pgpass file to allow pg_basebackup to run without password input
-        template "/var/lib/#{data_dir}/.pgpass" do
+        template "/var/lib/#{data_dir}/.pgpass" do # ~FC009
           source 'pgpass.erb'
           owner 'postgres'
           group 'postgres'
