@@ -20,6 +20,13 @@ platforms:
         enable_pgdg_yum: true
 
 suites:
+  - name: default
+    runlist:
+      - recipe[pg-multi::default]
+    attributes:
+      postgresql:
+        version: '9.3'  
+
   - name: mu14
     driver:
       vm_hostname: master-ubuntu-14

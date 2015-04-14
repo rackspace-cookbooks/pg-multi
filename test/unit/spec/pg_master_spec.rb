@@ -1,5 +1,5 @@
 # encoding: UTF-8
-require 'spec_helper'
+require_relative 'spec_helper'
 
 describe 'pg-multi::pg_master' do
   before do
@@ -11,7 +11,7 @@ describe 'pg-multi::pg_master' do
 
   platforms = {
     'ubuntu' => ['12.04', '14.04'],
-    'centos' => ['6.6', '7.0']
+    'centos' => ['6.6']
   }
 
   platforms.each do |platform, versions|
@@ -27,12 +27,16 @@ describe 'pg-multi::pg_master' do
           end.converge(described_recipe)
         end
 
+        it 'sets the hba.conf' do
+          expect(chef_run).to create_pg_hba_config('default')
+        end
+
         it 'includes pg-multi::default' do
           expect(chef_run).to include_recipe('pg-multi::default')
         end
 
-        it 'execute set-replication-user' do
-          expect(chef_run).to run_execute("psql -c \"CREATE USER repl REPLICATION LOGIN ENCRYPTED PASSWORD 'useagudpasswd';\"")
+        it 'sets repl user' do
+          expect(chef_run).to create_pg_repluser('default')
         end
       end
     end

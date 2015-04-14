@@ -27,7 +27,7 @@ node.set['postgresql']['config']['max_wal_senders'] = 3
 node.set['postgresql']['config']['checkpoint_segments'] = 8
 node.set['postgresql']['config']['wal_keep_segments'] = 8
 
-# since debian families can do ssl by default enable it, otherwise non-ssl connections
+# since debian OS families can do ssl by default enable it, otherwise non-ssl connections
 case node['platform_family']
 when 'debian'
   node.set['pg-multi']['host'] = 'hostssl'
@@ -35,6 +35,7 @@ when 'redhat'
   node.set['pg-multi']['host'] = 'host'
 end
 
+# Used to define the hda.conf file prior to install of main postgresql service
 pg_hba_config 'default' do
   host_type node['pg-multi']['host']
   slave_ips node['pg-multi']['slave_ip']
@@ -42,6 +43,7 @@ end
 
 include_recipe 'pg-multi::default'
 
+# Setup replication user
 pg_repluser 'default' do
   repl_pass node['pg-multi']['replication']['password']
 end

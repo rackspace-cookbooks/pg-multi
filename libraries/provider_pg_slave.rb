@@ -2,7 +2,6 @@ class Chef
   class Provider
     # builds an array of slave systems for use in pg_hba.conf file
     class PgSlave < Chef::Provider::LWRPBase
-
       use_inline_resources if defined?(use_inline_resources)
 
       def whyrun_supported?
@@ -12,7 +11,7 @@ class Chef
       action :create do
         if node['platform_family'] == 'debian'
           data_dir = 'postgresql'
-        elsif node['platform_family'] =='rhel'
+        elsif node['platform_family'] == 'rhel'
           data_dir = 'pgsql'
         end
 
@@ -23,7 +22,7 @@ class Chef
           when 'rhel'
             service_name "postgresql-#{new_resource.pg_version}"
           end
-          supports :restart => true
+          supports restart: true
           action :nothing
         end
 
