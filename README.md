@@ -26,12 +26,12 @@ for along with setting up the authorization within the pg_hba.conf file.
 
 The three libraries:
 
-pg_hba_config - is used to define the setting in the hba.conf file prior to install of the
+`pg_hba_config` - is used to define the setting in the hba.conf file prior to install of the
 master server.
 
-pg_repluser - is used to setup the replication user on the master server, post server install.
+`pg_repluser` - is used to setup the replication user on the master server, post server install.
 
-pg_slave - is used to setup replication from the slave server side post server install.
+`pg_slave` - is used to setup replication from the slave server side post server install.
 
 Setting PostgreSQL versions
 ---------------------------
