@@ -12,10 +12,10 @@ class Chef
         new_resource.slave_ips.each do |slaveip|
           node.default['postgresql']['pg_hba'] << {
             comment: '# authorize slave server',
-            type: '#{new_resource.host_type}',
+            type: "#{new_resource.host_type}", # ~FC002
             db: 'replication',
-            user: '#{new_resource.repl_user}',
-            addr: '#{slaveip}/32',
+            user: "#{new_resource.repl_user}", # ~FC002
+            addr: "#{slaveip}/32",
             method: 'md5'
           }
         end
