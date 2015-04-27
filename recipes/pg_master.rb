@@ -28,10 +28,9 @@ node.set['postgresql']['config']['checkpoint_segments'] = 8
 node.set['postgresql']['config']['wal_keep_segments'] = 8
 
 # since debian OS families can do ssl by default enable it, otherwise non-ssl connections
-case node['platform_family']
-when 'debian'
+if debian?
   node.set['pg-multi']['host'] = 'hostssl'
-when 'redhat'
+elsif rhel?
   node.set['pg-multi']['host'] = 'host'
 end
 

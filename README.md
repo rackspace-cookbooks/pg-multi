@@ -49,9 +49,9 @@ default of 8.4) you have to set this attribute as a node override:
 Attributes
 -----------
 
-`['pg-multi']['master']` : sets the IP address that defines the master node (Required)
+`['pg-multi']['master_ip']` : sets the IP address that defines the master node (Required)
 
-`['pg-multi']['slaves']` : is any array that defines the IP address(es) of
+`['pg-multi']['slave_ip']` : is any array that defines the IP address(es) of
 the slave node(s). (Required)
 
 `['pg-multi']['replication']['user']` : allows for the setting of a custom name for
@@ -59,7 +59,7 @@ the replication user, by default it is set to 'repl'.
 
 `['pg-multi']['replication']['password'] ` : allows for the setting of a custom password for the replication user. (Required)
 
-`['pg-multi']['host']` : sets if SSL is used between master and slave servers for replication. default is 'host' which is no SSL. If the server is a Debian family system it will default to 'hostssl' which enables SSL transport.
+`['pg-multi']['host']` : sets if SSL is used between master and slave servers for replication. default is 'hostssl' which is uses SSL (this only works on Debian family OS's by default). If the server is a RHEL family system it will default to 'host' which disables SSL transport.
 
 
 License & Authors

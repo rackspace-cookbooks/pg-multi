@@ -6,4 +6,4 @@ default['pg-multi']['slave_ip'] = []
 default['pg-multi']['replication']['user'] = 'repl'
 default['pg-multi']['replication']['password'] = 'useagudpasswd'
 
-default['pg-multi']['host'] = 'host'
+default['pg-multi']['host'] = 'hostssl'

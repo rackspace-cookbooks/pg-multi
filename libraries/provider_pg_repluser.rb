@@ -14,9 +14,7 @@ class Chef
           command %(psql -c "CREATE USER #{new_resource.repl_user} REPLICATION LOGIN ENCRYPTED PASSWORD '#{new_resource.repl_pass}';")
           not_if role_exists,  user: 'postgres'
           user 'postgres'
-          if new_resource.sensitive == 'true'
-            sensitive true
-          end
+          sensitive new_resource.sense
           action :run
         end
       end

@@ -36,9 +36,7 @@ class Chef
             username: new_resource.repl_user,
             password: new_resource.repl_pass
           )
-          if new_resource.sensitive == 'true'
-            sensitive true
-          end
+          sensitive new_resource.sense
           not_if { ::File.exist?("/var/lib/#{data_dir}/#{new_resource.pg_version}/main/recovery.conf") }
         end
 
@@ -72,9 +70,7 @@ class Chef
             rep_user:  new_resource.repl_user,
             password:  new_resource.repl_pass
           )
-          if new_resource.sensitive == 'true'
-            sensitive true
-          end
+          sensitive new_resource.sense
           notifies :restart, 'service[pg]', :immediately
         end
       end
