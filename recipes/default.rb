@@ -3,7 +3,7 @@
 # Cookbook Name:: pg-multi
 # Recipe:: default
 #
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2015, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,5 +18,4 @@
 # limitations under the License.
 #
 
-include_recipe 'postgresql::server'
-include_recipe 'chef-sugar'
+include_recipe 'postgresql::server' # ~RACK002

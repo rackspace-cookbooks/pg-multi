@@ -3,7 +3,7 @@
 # Cookbook Name:: pg-multi
 # Recipe:: pg_slave
 #
-# Copyright 2014, Rackspace US, Inc.
+# Copyright 2015, Rackspace US, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -28,15 +28,19 @@ node.set['postgresql']['config']['checkpoint_segments'] = 8
 node.set['postgresql']['config']['wal_keep_segments'] = 8
 node.set['postgresql']['config']['hot_standby'] = 'on'
 
+if debian?
+  node.set['pg-multi']['host'] = 'hostssl'
+elsif rhel?
+  node.set['pg-multi']['host'] = 'host'
+end
+
 include_recipe 'pg-multi::default'
 
-unless node.deep_fetch('testkitchen')
-  case node['platform_family']
-  when 'debian'
-    include_recipe 'pg-multi::_debian_slave'
-  when 'rhel'
-    include_recipe 'pg-multi::_redhat_slave'
-  end
+pg_slave 'default' do
+  repl_pass node['pg-multi']['replication']['password']
+  master_ip node['pg-multi']['master_ip']
+  pg_version node['postgresql']['version']
+  host_type node['pg-multi']['host']
 end
 
 tag('pg_slave')
